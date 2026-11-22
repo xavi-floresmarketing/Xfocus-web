@@ -35,17 +35,19 @@ chip(530,640,'2 · Durante',AMA,TINTA)
 chip(1112,640,'3 · Después',VERDE,WHITE)
 d=ImageDraw.Draw(im)
 
-# --- logo top-left ---
-sym=Image.open('xfocus_symbol.png').convert('RGBA'); sym=sym.crop(sym.getbbox())
-sh_=44; sym=sym.resize((int(sym.width*sh_/sym.height),sh_),Image.LANCZOS)
-fl=mf(900,28); lx,ly=30,26
+# --- logo top-left (official color logo on white pill) ---
+logo=Image.open('logo_xfocus_color.png').convert('RGBA')
+a=logo.split()[3].point(lambda v:255 if v>40 else 0)
+logo=logo.crop(a.getbbox())
+sh_=50; logo=logo.resize((int(logo.width*sh_/logo.height),sh_),Image.LANCZOS)
+fl=mf(900,30); lx,ly=34,28
 tw=d.textlength('XFOCUS',font=fl)
-pill=Image.new('RGBA',im.size,(0,0,0,0)); pd=ImageDraw.Draw(pill)
-pd.rounded_rectangle((lx-14,ly-12,lx+sym.width+16+tw+22,ly+sh_+12),16,fill=(32,33,36,170))
-im.alpha_composite(pill)
-im.alpha_composite(sym,(lx,ly))
+box=(lx-16,ly-12,lx+logo.width+14+tw+20,ly+sh_+12)
+def fnl(dd,c,isshadow): dd.rounded_rectangle(box,16,fill=c if isshadow else WHITE)
+shadowed(fnl)
+im.alpha_composite(logo,(lx,ly))
 d=ImageDraw.Draw(im)
-d.text((lx+sym.width+16,ly+7),"XFOCUS",font=fl,fill=WHITE)
+d.text((lx+logo.width+14,ly+8),'XFOCUS',font=fl,fill=TINTA)
 
 base='XF_MINIATURA_ferias-triptico_16x9_20261122_v01'
 im.convert('RGB').save(base+'_full.jpg',quality=95)
